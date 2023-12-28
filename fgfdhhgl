@@ -1,0 +1,628 @@
+<!-- /blog/.... -->
+<?php
+// template name: blog-template
+?>
+<?php get_header(); ?>
+
+<main id="main">
+  <!-- ======= Intro Single ======= -->
+  <section class="intro-single">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 col-lg-8">
+          <div class="title-single-box mb-3">
+            <h1 class="title-single">
+              <?php _e("Our Amazing Properties", "EstateAgency") ?>
+            </h1>
+            <span class="color-text-a">
+              <?php _e("Grid News", "EstateAgency") ?>
+            </span>
+          </div>
+        </div>
+        <div class="col-md-12 col-lg-4">
+          <nav aria-label="breadcrumb" class="breadcrumb-box d-flex justify-content-lg-end">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item">
+                <a href="<?php echo site_url(); ?>">
+                  <?php _e("Home", "EstateAgency"); ?>
+                </a>
+              </li>
+              <li class="breadcrumb-item active" aria-current="page">
+                <?php _e("News Grid", "EstateAgency") ?>
+              </li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="news-grid grid">
+    <div class="container mb-5">
+      <div class="row border border-secondary border-3">
+        <?php
+        $pages = (get_query_var('pages')) ? get_query_var('pages') : 1;
+        $args = array(
+          'post_type' => 'post',
+          'post_status' => 'publish',
+          'order' => 'asc',
+          'posts_per_page' => 6,
+          'paged' => $pages,
+        );
+        $query = new WP_Query($args);
+        if ($query->have_posts()) {
+          while ($query->have_posts()) {
+            $query->the_post();
+            $image = wp_get_attachment_image_src(get_post_thumbnail_id(), 'large');
+            ?>
+            <div class="col-md-4 border border-danger">
+              <div class="card-box-b card-shadow news-box">
+                <div class="img-box-b">
+                  <img src="<?php echo $image[0]; ?>" alt="" class="img-a img-fluid" style="width:550px; height: 400px;">
+                </div>
+                <div class="card-overlay">
+                  <div class="card-header-b">
+                    <div class="card-category-b">
+                      <a href="<?php the_permalink(); ?>" class="category-b">
+                        <?php the_field('categories'); ?>
+                      </a>
+                    </div>
+                    <div class="card-title-b">
+                      <h2 class="title-2">
+                        <a href="<?php the_permalink(); ?>">
+                          <?php the_title(); ?>
+                      </h2>
+                    </div>
+                    <div class="card-date">
+                      <span class="date-b">
+                        <?php the_field('date'); ?>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <?php } ?>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            <nav class="pagination-a">
+              <ul class="pagination justify-content-end">
+                <li class="page-item disabled">
+                  <?php
+                  $total_pages = $query->max_num_pages;
+                  if ($total_pages > 1) {
+                    $current_page = max(1, get_query_var('paged'));
+                    echo paginate_links(
+                      array(
+                        'format' => '/page/%#%',
+                        'current' => $current_page,
+                        'total' => $total_pages,
+                      )
+                    );
+                  } ?>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        <?php } ?>
+      </div>
+  </section><!-- End Intro Single-->
+</main><!-- End #main -->
+<?php get_footer(); ?>
+
+<!-- Single-Page-Property -->
+<div class="container">
+  <div class="row">
+    <div class="col-12 bg-black display-6 text-white text-center text-capitalize p-3 mt-3">
+      <?php the_title(); ?>
+    </div>
+  </div>
+  <div class="row">
+    <?php
+    $image = wp_get_attachment_image_src(get_post_thumbnail_id(), 'large');
+    ?>
+    <div class="col-6 p-3 bg-black d-flex border border-secondary border-end-0">
+      <img src="<?php echo $image[0]; ?>" ; style="height:600px; width:700px">
+      <?php
+      //  do_action('my_action');
+      ?>
+    </div>
+    <div class="col-6 p-3 bg-black text-white text-center border border-secondary">
+      <?php
+      the_content();
+      ?>
+    </div>
+    <div class="col-12 bg-black text-white border border-secondary text-center p-3">
+      <h5 style="color:white">the_excerpt</h5>
+    </div>
+  </div>
+</div>
+<!-- Single-Page-Property -->
+
+<!-- repeater -->
+<?php if (have_rows('slides')) {
+  while (have_rows('slides')) {
+    $row = the_row();
+    if ($subfields = get_row()) {
+      foreach ($subfields as $name => $value) {
+        $field = get_sub_field_object($name); ?>
+        <div>
+          <p>
+            <?php echo $field['label']; ?>
+          </p>
+          <h3>
+            <?php echo $value; ?>
+          </h3>
+        </div>
+        <?php
+      }
+    }
+  }
+}
+?>
+<!-- repeater -->
+<!-- loop for amneities -->
+
+<?php
+// $a = the_field('amenities');
+$amy = ['john', 'dave', 'tim'];
+$i = 0;
+while ($i < count($amy)) {
+  ?>
+  <ul class="list-a no-margin">
+    <li>
+      <?php echo $amy[$i] . "<br>"; ?>
+    </li>
+  </ul>
+  <?php $i++; ?>
+<?php } ?>
+<!-- loop -->
+
+
+
+<?php
+// custom-post-setup
+/**
+ * Adds a submenu page under a custom post type parent.
+ */
+function books_register_ref_page()
+{
+  add_submenu_page(
+    'edit.php?post_type=book',
+    __('Books Shortcode Reference', 'textdomain'),
+    __('Shortcode Reference', 'textdomain'),
+    'manage_options',
+    'books-shortcode-ref',
+    'books_ref_page_callback'
+  );
+}
+?>
+<script>
+
+  // wp_enqueue_script...............
+
+  /**
+   * Proper way to enqueue scripts and styles.
+   */
+  function wpdocs_theme_name_scripts() {
+    wp_enqueue_style('style-name', get_stylesheet_uri());
+    wp_enqueue_script('script-name', get_template_directory_uri(). '/js/example.js', array(), '1.0.0', true);
+  }
+  add_action('wp_enqueue_scripts', 'wpdocs_theme_name_scripts');
+</script>
+
+
+<!-- function.php................. -->
+<!-- Enqueue -->
+<script>
+
+  add_action('wp_ajax_register_js_files', 'register_js_files');
+  add_action('wp_ajax_nopriv_register_js_files', 'register_js_files');
+
+  function register_js_files() {
+    wp_enqueue_script("my_ajax_script", get_template_directory_uri(). "assets\js\custom_script.js", array('jQuery'), true);
+  }
+  add_action("wp_enqueue_scripts", "register_js_files");
+
+</script>
+<!-- 
+add_action('admin_enqueue_scripts', function() {
+  wp_enqueue_script('awhitepixel-script', get_stylesheet_directory_uri() . '/assets/js/awhitepixel-ajax.js', ['jquery'], '', true);
+}); -->
+
+<!-- property-template -->
+<script>
+
+  // let rentbtn = document.getElementById('for-rent');
+  // rentbtn.addEventListener('click', my_function);
+
+  function my_function() {
+    const xhr = new XMLHttpRequest();
+
+    xhr.onload = function () {
+      document.getElementById('for-rent').innerHTML = this.responseText;
+    }
+    xhr.open("GET", "Rent.php", true);
+    xhr.send();
+  }
+
+  add_action('wp_ajax_my_action', 'my_function');
+  add_action('wp_ajax_nopriv_my_action', 'my_function');
+</script>
+
+
+<!-- function-ajax -->
+
+<?php // used here only for enabling syntax highlighting. Leave this out if it's already included in your plugin file.
+
+// define the actions for the two hooks created, first for logged in users and the next for logged out users
+add_action("wp_ajax_my_user_like", "my_user_like");
+add_action("wp_ajax_nopriv_my_user_like", "please_login");
+
+// define the function to be fired for logged in users
+function my_user_like()
+{
+
+  // nonce check for an extra layer of security, the function will exit if it fails
+  if (!wp_verify_nonce($_REQUEST['nonce'], "my_user_like_nonce")) {
+    exit("Woof Woof Woof");
+  }
+
+  // fetch like_count for a post, set it to 0 if it's empty, increment by 1 when a click is registered 
+  $like_count = get_post_meta($_REQUEST["post_id"], "likes", true);
+  $like_count = ($like_count == ’) ? 0 : $like_count;
+  $new_like_count = $like_count + 1;
+
+  // Update the value of 'likes' meta key for the specified post, creates new meta data for the post if none exists
+  $like = update_post_meta($_REQUEST["post_id"], "likes", $new_like_count);
+
+  // If above action fails, result type is set to 'error' and like_count set to old value, if success, updated to new_like_count  
+  if ($like === false) {
+    $result['type'] = "error";
+    $result['like_count'] = $like_count;
+  } else {
+    $result['type'] = "success";
+    $result['like_count'] = $new_like_count;
+  }
+
+  // Check if action was fired via Ajax call. If yes, JS code will be triggered, else the user is redirected to the post page
+  if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+    $result = json_encode($result);
+    echo $result;
+  } else {
+    header("Location: " . $_SERVER["HTTP_REFERER"]);
+  }
+
+  // don't forget to end your scripts with a die() function - very important
+  die();
+}
+
+// define the function to be fired for logged out users
+function please_login()
+{
+  echo "You must log in to like";
+  die();
+}
+// option
+if ($rent) {
+  ?>
+  <form>
+    <select name="customSel" class="custom-select">
+      <option selected value="">For-You
+      </option>
+      <?php
+      foreach ($rent as $rt) {
+        ?>
+        <option value="<?php $rt->slug; ?>">
+          <?php echo $rt->name; ?>
+        </option>
+      <?php } ?>
+    </select>
+  </form>
+<?php } ?>
+
+<!-- custom_script.js -->
+<script>
+
+  // Ajax for custom post......
+
+
+
+  $(document).ready(function () {
+    $("#for_rent").click(function () {
+      $.ajax({
+        url: "Test_success.txt",
+        success: function (result) {
+          $("#prop_ajax").php(result);
+        }
+      })
+    })
+  })
+
+
+
+  // let rentbtn = document.getElementById('forrent');
+  // rentbtn.addEventListener('click', my_function);
+
+  // function my_function() {
+  //     const xhr = new XMLHttpRequest();
+
+  //     xhr.onload = function () {
+  //         document.getElementById('for-rent').innerHTML = this.responseText;
+  //     }
+  //     document.getElementById('for-rent').innerHTML = "hello";
+  //     xhr.open("GET", "Rent.php", true);
+  //     xhr.send();
+  // }
+
+  // add_action('wp_ajax_nopriv_my_action', 'my_function');
+  // add_action('wp_ajax_my_action', 'my_function');
+
+</script>
+
+<!-- 
+  
+// Shortcode: [my_ajax_filter_search]
+
+
+add_shortcode('saveAjaxData', ' my_ajax_filter');
+// my_ajax_filter_search
+// my_ajax_filter_search_shortcode
+// html-end....
+ -->
+
+<!-- property-rent -->
+
+<div class="row" id="property_rent">
+ 
+  <?php
+  
+  $args = array(
+    'post_type' => 'property',
+    'post_status' => 'publish',
+    'order' => 'asc',
+    'posts_per_page' => 3,
+  );
+  $query = new WP_Query($args);
+  while ($query->have_posts()) {
+    $query->the_post();
+    $image = wp_get_attachment_image_src(get_post_thumbnail_id(), 'large');
+    ?>
+    <div class="col-md-4" id="prop_rent">
+      <div class="card-box-a card-shadow">
+        <div class="img-box-a">
+          <img src="<?php echo $image[0]; ?>" alt="" class="img-a img-fluid" style="width:515px; height: 450px;">
+        </div>
+      </div>
+      <?php wp_reset_postdata(); ?>
+    </div>
+  <?php } ?>
+</div>
+
+
+// callback.......
+<?php
+function property()
+{
+
+  header("Content-Type: application/json");
+
+  $meta_query = array('relation' => 'AND');
+
+  if (isset($_POST['language'])) {
+    $Rent_path = sanitize_text_field($_POST['language']);
+    $meta_query[] = array(
+      'key' => 'rent',
+      'value' => $Rent_path,
+      'compare' => '='
+    );
+  }
+
+  print_r($_POST);
+  wp_die();
+
+}
+
+// for sale...
+
+// $("select.custom-select").on('change', function () {
+//   Property = $(".custom-select option:selected").val();
+//   if (Property == 4) {
+//     alert("For Sale");
+//   }
+//   $.ajax({
+//     url: ajax_url,
+//     type: 'POST',
+//     data: { 'action': 'saveAjaxData', 'filter': Property },
+//     success: function (data) {
+//       $("#property_sale").html(data);
+
+//       prop_rent = $("#saveAjaxData");
+//       prop_rentForm = prop_rent.find("form");
+
+//       prop_rentForm.submit(function (e) {
+//         e.preventDefault();
+
+//         if (prop_rentForm.find("#demo4").val().length !== 0) {
+//           rent = prop_rentForm.find("#demo4").val();
+//         }
+
+//         // we will add codes above this line later
+//       });
+//     }
+
+//   });
+// });
+// $.change
+// for sale end...
+
+// dropdown
+?>
+<!-- pagination...... -->
+<div class="nav-links">
+            <?php
+            // Create custom pagination links
+            $big = 999999999; // Set an arbitrarily large number
+            $pagination = paginate_links(array(
+              'base' => str_replace($big, '%#%', esc_url(get_pagenum_link($big))),
+              'format' => '?paged=%#%',
+              // 'current' => max(1, get_query_var('paged')),
+              'current' => max(1, $paged),
+              'total' => $query->max_num_pages,
+              'type' => 'array',
+              'prev_text' => '«',
+              'next_text' => '»',
+            ));
+
+            // Output the pagination links
+            if ($pagination) {
+              echo '<div class="pagination">';
+              foreach ($pagination as $link) {
+                echo '<span class="page-link">' . $link . '</span>';
+              }
+              echo '</div>';
+            }
+            ?>
+          </div>
+<!-- pagination of wordpress--end..... -->
+<?php
+?>
+<?php
+function rent_load_more()
+{
+	$rent_args = array(
+		'post_type' => 'property',
+		'posts_per_page' => 3,
+		'paged' => $_POST['paged'],
+	);
+	$rent_query = new WP_Query($rent_args); ?>
+	<ul id="rent_loadmore">
+		<?php
+		while ($rent_query->have_posts()) {
+			$rent_query->the_post();
+			get_template_part('Property');
+			//   $image = wp_get_attachment_image_src(get_post_thumbnail_id(), 'large');
+		}
+		?>
+	</ul>
+	<?php
+	wp_reset_postdata();
+	?>
+
+<?php
+}
+add_action('wp_ajax_rent_load_more', 'rent_load_more');
+add_action('wp_ajax_nopriv_rent_load_more', 'rent_load_more');
+
+// new load more*******************************************************************************************************************************
+
+function rent_load_more()
+{
+
+	$sale_type = ($_POST);
+
+	// pagination.........
+	$val = array(
+		'post_type' => 'property',
+		'post_status' => 'publish',
+		// 'posts_per_page' => 3,
+	);
+
+	?>
+	<div class="row" id="properties_rent" class="property_sale">
+		<?php
+		if ($sale_type['filter'] == 'rent') {
+			$args = array(
+				'post_type' => $val,
+				'posts_per_page' => 3,
+				'paged' => $_POST['paged'],
+				// 'order' => 'asc',
+				'meta_query' => array(
+					array(
+						'key' => 'sale_type',
+						'value' => 'rent',
+						// 'compare' => '='
+					),
+				)
+			);
+			$query = new WP_Query($args);
+			while ($query->have_posts()) {
+				$query->the_post();
+				$image = wp_get_attachment_image_src(get_post_thumbnail_id(), 'large');
+				?>
+				<div class="col-md-4" id="prop_rent">
+					<div class="card-box-a card-shadow">
+						<div class="img-box-a">
+							<img src="<?php echo $image[0]; ?>" alt="" class="img-a img-fluid" style="width:515px; height: 450px;">
+						</div>
+						<div class="card-overlay">
+							<div class="card-overlay-a-content">
+								<div class="card-header-a">
+									<h2 class="card-title-a">
+										<a href="<?php the_permalink(); ?>">
+											<?php the_title(); ?>
+										</a>
+									</h2>
+								</div>
+								<div class="card-body-a">
+									<div class="price-box d-flex">
+										<span class="price-a">
+											<?php the_field('rent'); ?>
+										</span>
+									</div>
+									<a href="<?php the_permalink(); ?>" class="link-a">
+										<?php _e("Click here to view", "EstateAgency") ?>
+										<span class="bi bi-chevron-right"></span>
+									</a>
+								</div>
+								<div class="card-footer-a">
+									<ul class="card-info d-flex justify-content-around">
+										<li>
+											<h4 class="card-info-title">
+												<?php _e("Area", "EstateAgency") ?>
+											</h4>
+											<?php the_field('area'); ?>
+											<sup>2</sup>
+										</li>
+										<li>
+											<h4 class="card-info-title">
+												<?php _e("Beds", "EstateAgency") ?>
+											</h4>
+											<?php the_field('beds'); ?>
+										</li>
+										<li>
+											<h4 class="card-info-title">
+												<?php _e("Baths", "EstateAgency") ?>
+											</h4>
+											<?php the_field('baths'); ?>
+										</li>
+										<li>
+											<h4 class="card-info-title">
+												<?php _e("Garages", "EstateAgency") ?>
+											</h4>
+											<?php the_field('garages'); ?>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+					<?php wp_reset_postdata(); ?>
+				</div>
+			<?php }
+		} ?>
+	</div>
+	<div class="btn__wrapper">
+		<!-- <a href="#!" class="btn btn__primary" id="load-more">Load more</a> -->
+		<button type="button" class="btn btn__primary" id="load_more">Load More</button>
+	</div>
+	<?php
+	wp_die();
+
+}
+add_action('wp_ajax_rent_load_more', 'rent_load_more');
+add_action('wp_ajax_nopriv_rent_load_more', 'rent_load_more');
+?>
+<!-- new load more... -->
+
+
