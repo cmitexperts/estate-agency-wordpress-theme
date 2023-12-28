@@ -22,7 +22,7 @@
                             </a>
                         </li>
                         <li class="breadcrumb-item">
-                            <a href="http://localhost/wordpress/demo/">
+                            <a href="<?php echo home_url('/demo'); ?>">
                                 <?php _e("Properties", "EstateAgency") ?>
                             </a>
                         </li>
