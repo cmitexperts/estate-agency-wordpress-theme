@@ -507,13 +507,11 @@ function rent_load_more()
 	</ul>
 	<?php
 	wp_reset_postdata();
-	?>
-
-<?php
+	
 }
 add_action('wp_ajax_rent_load_more', 'rent_load_more');
 add_action('wp_ajax_nopriv_rent_load_more', 'rent_load_more');
-
+?>
 // new load more*******************************************************************************************************************************
 
 function rent_load_more()
@@ -625,4 +623,96 @@ add_action('wp_ajax_nopriv_rent_load_more', 'rent_load_more');
 ?>
 <!-- new load more... -->
 
+
+<!-- load more -->
+<?php
+function all_load_more()
+{
+	$args = array(
+		'post_type' => 'property',
+		'post_status' => 'publish',
+		'posts_per_page' => 3,
+		'paged' => $_POST['paged'],
+	);
+	?>
+	<div class="row" id="all_load" class="all_load">
+		<?php
+		$query = new WP_Query($args);
+		while ($query->have_posts()) {
+			$query->the_post();
+			$image = wp_get_attachment_image_src(get_post_thumbnail_id(), 'large');
+			?>
+			<div class="col-md-4" id="rentload">
+				<div class="card-box-a card-shadow">
+					<div class="img-box-a">
+						<img src="<?php echo $image[0]; ?>" alt="" class="img-a img-fluid" style="width:515px; height: 450px;">
+					</div>
+					<div class="card-overlay">
+						<div class="card-overlay-a-content">
+							<div class="card-header-a">
+								<h2 class="card-title-a">
+									<a href="<?php the_permalink(); ?>">
+										<?php the_title(); ?>
+									</a>
+								</h2>
+							</div>
+							<div class="card-body-a">
+								<div class="price-box d-flex">
+									<span class="price-a">
+										<?php the_field('rent'); ?>
+									</span>
+								</div>
+								<a href="<?php the_permalink(); ?>" class="link-a">
+									<?php _e("Click here to view", "EstateAgency") ?>
+									<span class="bi bi-chevron-right"></span>
+								</a>
+							</div>
+							<div class="card-footer-a">
+								<ul class="card-info d-flex justify-content-around">
+									<li>
+										<h4 class="card-info-title">
+											<?php _e("Area", "EstateAgency") ?>
+										</h4>
+										<?php the_field('area'); ?>
+										<sup>2</sup>
+									</li>
+									<li>
+										<h4 class="card-info-title">
+											<?php _e("Beds", "EstateAgency") ?>
+										</h4>
+										<?php the_field('beds'); ?>
+									</li>
+									<li>
+										<h4 class="card-info-title">
+											<?php _e("Baths", "EstateAgency") ?>
+										</h4>
+										<?php the_field('baths'); ?>
+									</li>
+									<li>
+										<h4 class="card-info-title">
+											<?php _e("Garages", "EstateAgency") ?>
+										</h4>
+										<?php the_field('garages'); ?>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+				<?php wp_reset_postdata(); ?>
+			</div>
+		<?php }
+		?>
+	</div>
+	<?php
+	wp_reset_postdata();
+	?>
+
+	<?php
+	wp_die();
+
+}
+add_action('wp_ajax_all_load_more', 'all_load_more');
+add_action('wp_ajax_nopriv_all_load_more', 'all_load_more');
+?>
 

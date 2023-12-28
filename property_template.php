@@ -37,7 +37,7 @@
         <div class="col-sm-12">
           <div class="grid-option">
             <form>
-              <select class="custom-select">
+              <select class="custom-select" id="custom_select">
                 <option value="all" class="all" name="all">
                   <?php _e("All", "EstateAgency") ?>
                 </option>
@@ -62,9 +62,7 @@
         $args = array(
           'post_type' => 'property',
           'post_status' => 'publish',
-          'order' => 'asc',
           'posts_per_page' => 3,
-          // 'paged' => $paged
         );
         $query = new WP_Query($args);
         while ($query->have_posts()) {
@@ -132,14 +130,15 @@
           </div>
         <?php } ?>
       </div>
-      <div class="row float-end">
+      <!-- <div class="row text-center">
         <div class="col-sm-12">
           <div class="btn__wrapper text-center">
-            <button type="submit" class="btn btn__primary" id="load_more">Load More...</button>
+            <button type="submit" class="btn btn__primary" id="load_more">Load More</button>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
+
   </section><!-- End Intro Single-->
 
   <!-- ======= Property Grid ======= -->

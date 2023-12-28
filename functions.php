@@ -298,6 +298,7 @@ function saveAjaxData()
 	$val = array(
 		'post_type' => 'property',
 		'post_status' => 'publish',
+
 		// 'posts_per_page' => 3,
 	);
 
@@ -318,7 +319,8 @@ function saveAjaxData()
 					),
 				)
 			);
-		} else if ($sale_type['filter'] == 'sale') {
+		} 
+		else if ($sale_type['filter'] == 'sale') {
 
 			$args = array(
 				'post_type' => $val,
@@ -334,13 +336,21 @@ function saveAjaxData()
 		} else if ($sale_type['filter'] == 'New_To_Old') {
 			$args = array('post_type' => $val,
 				'posts_per_page' => 3,
-				'order' => 'asc',
-
+				// 'order' => 'asc',
 			);
 
 		} else if ($sale_type['filter'] == 'all') {
 			$args = array('post_type' => $val,
+				// 'order' => 'asc',
 				'posts_per_page' => 3,
+			);
+		}
+		else{
+			$args = array(
+				'post_type' => 'property',
+				'post_status' => 'publish',
+				'posts_per_page' => 3,
+				'paged' => $_POST['paged'],
 			);
 		}
 		$query = new WP_Query($args);
@@ -409,9 +419,13 @@ function saveAjaxData()
 			</div>
 		<?php } ?>
 	</div>
-	<!-- <div class="btn__wrapper text-center">
-		<button class="btn btn__primary" id="load_more">Rent Load More</button>
-	</div> -->
+	<div class="row text-center">
+		<div class="col-sm-12">
+			<div class="btn__wrapper text-center">
+				<button type="submit" class="btn btn__primary" id="load_more">Load More...</button>
+			</div>
+		</div>
+	</div>
 	<?php
 	wp_die();
 }
@@ -420,97 +434,5 @@ add_action('wp_ajax_saveAjaxData', 'saveAjaxData');
 
 
 // Load More for rent...
-function all_load_more()
-{
-	$args = array(
-		'post_type' => 'property',
-		'post_status' => 'publish',
-		'posts_per_page' => 3,
-		'order' => 'asc',
-		'paged' => $_POST['paged'],
-	);
-	?>
-	<!--  id="rent_load" class="rent_load" -->
-	<div class="row" id="rent_load" class="rent_load">
-		<?php
-		$query = new WP_Query($args);
-		while ($query->have_posts()) {
-			$query->the_post();
-			// $response .= get_template_part('parts/card', 'Property');
-			$image = wp_get_attachment_image_src(get_post_thumbnail_id(), 'large');
-			?>
-			<div class="col-md-4" id="rentload">
-				<div class="card-box-a card-shadow">
-					<div class="img-box-a">
-						<img src="<?php echo $image[0]; ?>" alt="" class="img-a img-fluid" style="width:515px; height: 450px;">
-					</div>
-					<div class="card-overlay">
-						<div class="card-overlay-a-content">
-							<div class="card-header-a">
-								<h2 class="card-title-a">
-									<a href="<?php the_permalink(); ?>">
-										<?php the_title(); ?>
-									</a>
-								</h2>
-							</div>
-							<div class="card-body-a">
-								<div class="price-box d-flex">
-									<span class="price-a">
-										<?php the_field('rent'); ?>
-									</span>
-								</div>
-								<a href="<?php the_permalink(); ?>" class="link-a">
-									<?php _e("Click here to view", "EstateAgency") ?>
-									<span class="bi bi-chevron-right"></span>
-								</a>
-							</div>
-							<div class="card-footer-a">
-								<ul class="card-info d-flex justify-content-around">
-									<li>
-										<h4 class="card-info-title">
-											<?php _e("Area", "EstateAgency") ?>
-										</h4>
-										<?php the_field('area'); ?>
-										<sup>2</sup>
-									</li>
-									<li>
-										<h4 class="card-info-title">
-											<?php _e("Beds", "EstateAgency") ?>
-										</h4>
-										<?php the_field('beds'); ?>
-									</li>
-									<li>
-										<h4 class="card-info-title">
-											<?php _e("Baths", "EstateAgency") ?>
-										</h4>
-										<?php the_field('baths'); ?>
-									</li>
-									<li>
-										<h4 class="card-info-title">
-											<?php _e("Garages", "EstateAgency") ?>
-										</h4>
-										<?php the_field('garages'); ?>
-									</li>
-								</ul>
-							</div>
-						</div>
-					</div>
-				</div>
-				<?php wp_reset_postdata(); ?>
-			</div>
-		<?php }
-		?>
-	</div>
-	<?php
-	wp_reset_postdata();
-	?>
-	<!-- <div class="btn__wrapper text-center">
-		<button type="submit" class="btn btn__primary" id="load_more">Rent Load_More</button>
-	</div> -->
-	<?php
-	wp_die();
 
-}
-add_action('wp_ajax_all_load_more', 'all_load_more');
-add_action('wp_ajax_nopriv_all_load_more', 'all_load_more');
-?>
+
