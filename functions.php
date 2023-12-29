@@ -294,23 +294,17 @@ function custom_menu()
 function saveAjaxData()
 {
 	// print_r($_POST);
-	$sale_type = ($_POST);
-	$val = array(
-		'post_type' => 'property',
-		'post_status' => 'publish',
-
-		// 'posts_per_page' => 3,
-	);
-
+	// die;
+	$sale_type = $_POST['filter'];
 	?>
 	<div class="row" id="properties_rent" class="property_sale">
 		<?php
-		if ($sale_type['filter'] == 'rent') {
+		if ($sale_type == 'rent') {
 			$args = array(
-				'post_type' => $val,
+				'post_type' => 'property',
+				'post_status' => 'publish',
 				'posts_per_page' => 3,
 				// 'paged' => $_POST['paged'],
-				// 'order' => 'asc',
 				'meta_query' => array(
 					array(
 						'key' => 'sale_type',
@@ -319,11 +313,12 @@ function saveAjaxData()
 					),
 				)
 			);
-		} 
-		else if ($sale_type['filter'] == 'sale') {
+		} else if ($sale_type == 'sale') {
 
 			$args = array(
-				'post_type' => $val,
+				'post_type' => 'property',
+				'post_status' => 'publish',
+				// 'paged' => $_POST['paged'],
 				'posts_per_page' => 3,
 				'meta_query' => array(
 					array(
@@ -333,19 +328,22 @@ function saveAjaxData()
 					),
 				)
 			);
-		} else if ($sale_type['filter'] == 'New_To_Old') {
-			$args = array('post_type' => $val,
+		} else if ($sale_type == 'New_To_Old') {
+			$args = array(
+				'post_type' => 'property',
+				'post_status' => 'publish',
+				// 'paged' => $_POST['paged'],
 				'posts_per_page' => 3,
-				// 'order' => 'asc',
 			);
 
-		} else if ($sale_type['filter'] == 'all') {
-			$args = array('post_type' => $val,
-				// 'order' => 'asc',
+		} else if ($sale_type == 'all') {
+			$args = array(
+				'post_type' => 'property',
+				'post_status' => 'publish',
+				// 'paged' => $_POST['paged'],
 				'posts_per_page' => 3,
 			);
-		}
-		else{
+		} else {
 			$args = array(
 				'post_type' => 'property',
 				'post_status' => 'publish',
@@ -419,18 +417,15 @@ function saveAjaxData()
 			</div>
 		<?php } ?>
 	</div>
-	<div class="row text-center">
-		<div class="col-sm-12">
-			<div class="btn__wrapper text-center">
-				<button type="submit" class="btn btn__primary" id="load_more">Load More...</button>
-			</div>
-		</div>
-	</div>
+
 	<?php
 	wp_die();
+	?>
+
+	<?php
 }
-add_action('wp_ajax_nopriv_saveAjaxData', 'saveAjaxData');
-add_action('wp_ajax_saveAjaxData', 'saveAjaxData');
+add_action('wp_ajax_nopriv_get_properties_data', 'saveAjaxData');
+add_action('wp_ajax_get_properties_data', 'saveAjaxData');
 
 
 // Load More for rent...

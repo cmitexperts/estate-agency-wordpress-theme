@@ -1,51 +1,49 @@
 
 // Ajax for custom post...... 
 // console.log(my_ajax_object.ajax_url);
-// $(document).ready(function () {
-//   $("select.custom-select").on('change', function () {
-//     Property = $(".custom-select option:selected").val();
 
-//     // if (Property == "rent") {
-//     //   // alert("For Rent");
-//     // }
-//     // else if (Property == "sale") {
-//     //   // alert("For New");
-//     // }
-
-//     $.ajax({
-//       url: ajax_url,
-//       type: 'POST',
-//       data: { 'action': 'saveAjaxData', 'filter': Property },
-//       success: function (data) {
-//         $("#property_rent").html(data);
-//       }
-//     }); // Ajax...
-//   });  // On.change
-// }); // document.ready
+var currentPage = 1;
+$(document).ready(function () {
+  $("select#custom_select").on('change', function () {
+    load_data(false); // Ajax...
+  });  // On.change
+}); // document.ready
 
 
 // For All...
 
-// $(document).ready(function () {
-//   let currentPage = 1;
-//   $('#load_more').on('click', function () {
-//     // alert('hello');
-//     currentPage++;
-//     $.ajax({
-//       url: ajax_url,
-//       type: 'POST',
-//       dataType: 'html',
-//       data: { 'action': 'all_load_more', 'paged': currentPage},
-//       success: function (data) {
-//         let ppp = $('#rent_load').val()
-//         if (ppp == '') {
-//           $('#load_more').hide();
-//         }
-//         $("#property_rent").append(data);
-//       }
-//     });
-//   });
-// });
+$(document).ready(function () {
+  $('#load_more').on('click', function () {
+    // alert('hello');
+    load_data(true);
+  });
+});
+
+function load_data(loadMore) {
+  Property = $("#custom_select option:selected").val();
+  // if (loadMore) {
+  //   currentPage++;
+  // }
+  $.ajax({
+    url: ajax_url,
+    type: 'POST',
+    dataType: 'html',
+    data: { 'action': 'get_properties_data', 'paged': currentPage, 'loadmore': loadMore, 'filter': Property},
+    success: function (data) {
+      // let ppp = $('#rent_load').val()
+      // if (ppp == '') {
+      //   $('#load_more').hide();
+      // }
+      if (loadMore == true) {
+        $("#property_rent").append(data);
+        currentPage++;
+      }
+      if(loadMore == false) {
+        $("#property_rent").html(data);
+      }
+    }
+  });
+}
 
 // For Rent
 
@@ -67,29 +65,6 @@
 // });
 
 // for onclick and onchange...........
-$(document).ready(function () {
-  $('#property_rent, #custom_select').on('click change', function (e) {
-    Property = $("#custom_select option:selected").val();
-    rent = $("#load_more").val();
-    var currentpage = 1;
-    if (e.type === 'load_more') {
-      currentpage++;
-      alert('onclick');
-    }
-    else if (this.id !== 'custom_select') {
-      alert('onchange');
-    }
-    $.ajax({
-      url: ajax_url,
-      type: 'POST',
-      data: { 'action': 'saveAjaxData', 'filter': Property, 'paged': currentpage },
-      success: function (data) {
-        $("#property_rent").html(data);
-      }
-    }); // Ajax...
-  });
-});
-
 
 
 
@@ -109,3 +84,7 @@ $(document).ready(function () {
 
 // add_action('wp_ajax_nopriv_my_action', 'my_function');
 // add_action('wp_ajax_my_action', 'my_function');
+
+// if (this.id == 'custom_select') {}
+// if (e.type === 'load_more') {}
+

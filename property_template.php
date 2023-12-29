@@ -45,7 +45,6 @@
                   <?php _e("New To Old", "EstateAgency") ?>
                 </option>
                 <option value="rent" class="rent" name="rent">
-                  <!-- <button type="button" id="for-rent" class="btn btn-primary">For Rent</button> -->
                   <?php _e("For Rent", "EstateAgency") ?>
                 </option>
                 <option value="sale" class="sale" name="sale">
@@ -63,6 +62,7 @@
           'post_type' => 'property',
           'post_status' => 'publish',
           'posts_per_page' => 3,
+          'order' => 'asc',
         );
         $query = new WP_Query($args);
         while ($query->have_posts()) {
@@ -130,15 +130,15 @@
           </div>
         <?php } ?>
       </div>
-      <!-- <div class="row text-center">
-        <div class="col-sm-12">
-          <div class="btn__wrapper text-center">
-            <button type="submit" class="btn btn__primary" id="load_more">Load More</button>
-          </div>
-        </div>
-      </div> -->
-    </div>
 
+    </div>
+    <!-- <div class="row"> -->
+    <div class="col-sm-12">
+        <div class="btn__wrapper text-center">
+          <button class="btn btn__primary" id="load_more">Load More</button>
+        </div>
+      </div>
+    <!-- </div> -->
   </section><!-- End Intro Single-->
 
   <!-- ======= Property Grid ======= -->
@@ -154,3 +154,4 @@
 
 
 <?php get_footer(); ?>
+
