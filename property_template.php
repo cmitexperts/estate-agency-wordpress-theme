@@ -61,6 +61,7 @@
         $args = array(
           'post_type' => 'property',
           'post_status' => 'publish',
+          // 'paged' => $paged,
           'posts_per_page' => 3,
           'order' => 'asc',
         );
@@ -130,7 +131,6 @@
           </div>
         <?php } ?>
       </div>
-
     </div>
     <!-- <div class="row"> -->
     <div class="col-sm-12">

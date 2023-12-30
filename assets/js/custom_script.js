@@ -1,16 +1,10 @@
-
-// Ajax for custom post...... 
-// console.log(my_ajax_object.ajax_url);
-
-var currentPage = 1;
+// var ppp = 3;
+var page = 1;
 $(document).ready(function () {
   $("select#custom_select").on('change', function () {
-    load_data(false); // Ajax...
-  });  // On.change
-}); // document.ready
-
-
-// For All...
+    load_data(false);
+  });
+});
 
 $(document).ready(function () {
   $('#load_more').on('click', function () {
@@ -18,53 +12,32 @@ $(document).ready(function () {
     load_data(true);
   });
 });
-
 function load_data(loadMore) {
   Property = $("#custom_select option:selected").val();
   // if (loadMore) {
-  //   currentPage++;
+  //   page++;
   // }
   $.ajax({
     url: ajax_url,
     type: 'POST',
     dataType: 'html',
-    data: { 'action': 'get_properties_data', 'paged': currentPage, 'loadmore': loadMore, 'filter': Property},
+    data: { 'action': 'get_properties_data', 'paged': page, 'loadmore': loadMore, 'filter': Property },
     success: function (data) {
-      // let ppp = $('#rent_load').val()
-      // if (ppp == '') {
-      //   $('#load_more').hide();
+      // if(paged >= data.max) {
+      //   $('#load-more').hide();
       // }
+      if (loadMore == false) {
+        $("#property_rent").html(data);
+      }
       if (loadMore == true) {
         $("#property_rent").append(data);
-        currentPage++;
-      }
-      if(loadMore == false) {
-        $("#property_rent").html(data);
+        page++;
       }
     }
   });
 }
 
-// For Rent
 
-// $(document).ready(function () {
-
-//   rentpage = 1;
-//   $('#rent_load').on('click', function () {
-//     rentpage++;
-//     $.ajax({
-//       url: ajax_url,
-//       type: 'POST',
-//       dataType: 'html',
-//       data: { 'action': 'Rent_load_more', 'page': rentpage},
-//       success: function (data) {
-//         $("#property_rent").append(data);
-//       }
-//     });
-//   });
-// });
-
-// for onclick and onchange...........
 
 
 
@@ -88,3 +61,7 @@ function load_data(loadMore) {
 // if (this.id == 'custom_select') {}
 // if (e.type === 'load_more') {}
 
+// let ppp = $('#rent_load').val()
+// if (ppp == '') {
+//   $('#load_more').hide();
+// }

@@ -296,15 +296,16 @@ function saveAjaxData()
 	// print_r($_POST);
 	// die;
 	$sale_type = $_POST['filter'];
+	// $type = $_POST['loadmore'];
 	?>
 	<div class="row" id="properties_rent" class="property_sale">
 		<?php
+		// if ($type == false) {
 		if ($sale_type == 'rent') {
 			$args = array(
 				'post_type' => 'property',
 				'post_status' => 'publish',
 				'posts_per_page' => 3,
-				// 'paged' => $_POST['paged'],
 				'meta_query' => array(
 					array(
 						'key' => 'sale_type',
@@ -313,12 +314,11 @@ function saveAjaxData()
 					),
 				)
 			);
-		} else if ($sale_type == 'sale') {
-
+		} 
+		else if ($sale_type == 'sale') {
 			$args = array(
 				'post_type' => 'property',
 				'post_status' => 'publish',
-				// 'paged' => $_POST['paged'],
 				'posts_per_page' => 3,
 				'meta_query' => array(
 					array(
@@ -332,7 +332,6 @@ function saveAjaxData()
 			$args = array(
 				'post_type' => 'property',
 				'post_status' => 'publish',
-				// 'paged' => $_POST['paged'],
 				'posts_per_page' => 3,
 			);
 
@@ -340,14 +339,19 @@ function saveAjaxData()
 			$args = array(
 				'post_type' => 'property',
 				'post_status' => 'publish',
-				// 'paged' => $_POST['paged'],
 				'posts_per_page' => 3,
+				'order' => 'ASC',
 			);
-		} else {
+		}
+		// } 
+		// else if ($type == true && $sale_type == 'New_To_Old') {
+		// 	
+		else {
 			$args = array(
 				'post_type' => 'property',
 				'post_status' => 'publish',
 				'posts_per_page' => 3,
+				'order' => 'ASC',
 				'paged' => $_POST['paged'],
 			);
 		}
@@ -417,12 +421,10 @@ function saveAjaxData()
 			</div>
 		<?php } ?>
 	</div>
-
 	<?php
 	wp_die();
-	?>
-
-	<?php
+?>
+<?php
 }
 add_action('wp_ajax_nopriv_get_properties_data', 'saveAjaxData');
 add_action('wp_ajax_get_properties_data', 'saveAjaxData');
