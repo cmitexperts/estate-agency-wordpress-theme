@@ -296,65 +296,107 @@ function saveAjaxData()
 	// print_r($_POST);
 	// die;
 	$sale_type = $_POST['filter'];
-	// $type = $_POST['loadmore'];
+	$type = $_POST['loadmore'];
+	// $off = $_POST['offset'];
 	?>
-	<div class="row" id="properties_rent" class="property_sale">
+	<div class="row" id="property_rent" class="property_sale">
 		<?php
-		// if ($type == false) {
-		if ($sale_type == 'rent') {
+		if ($type == 'false') {
+
+			if ($sale_type == 'rent') {
+				$args = array(
+					'post_type' => 'property',
+					'post_status' => 'publish',
+					'posts_per_page' => 3,
+					'meta_query' => array(
+						array(
+							'key' => 'sale_type',
+							'value' => 'rent',
+							// 'compare' => '='
+						),
+					)
+				);
+			} else if ($sale_type == 'sale') {
+				$args = array(
+					'post_type' => 'property',
+					'post_status' => 'publish',
+					'posts_per_page' => 3,
+					'meta_query' => array(
+						array(
+							'key' => 'sale_type',
+							'value' => 'sale',
+							// 'compare' => '='
+						),
+					)
+				);
+			} else if ($sale_type == 'New_To_Old') {
+				$args = array(
+					'post_type' => 'property',
+					'post_status' => 'publish',
+					'posts_per_page' => 3,
+					'order' => 'ASC',
+				);
+
+			} else if ($sale_type == 'all') {
+				$args = array(
+					'post_type' => 'property',
+					'post_status' => 'publish',
+					'posts_per_page' => 3,
+					// 'order' => 'ASC',
+				);
+			}
+		} else if ($type == 'true' && $sale_type == 'rent') {
+			// else {
 			$args = array(
 				'post_type' => 'property',
 				'post_status' => 'publish',
 				'posts_per_page' => 3,
+				'paged' => $_POST['paged'],
+				'offset' => 3,
 				'meta_query' => array(
 					array(
 						'key' => 'sale_type',
 						'value' => 'rent',
-						// 'compare' => '='
 					),
 				)
 			);
-		} 
-		else if ($sale_type == 'sale') {
+		} else if ($type == 'true' && $sale_type == 'sale') {
 			$args = array(
 				'post_type' => 'property',
 				'post_status' => 'publish',
 				'posts_per_page' => 3,
+				'paged' => $_POST['paged'],
+				'offset' => 3,
 				'meta_query' => array(
 					array(
 						'key' => 'sale_type',
 						'value' => 'sale',
-						// 'compare' => '='
 					),
 				)
 			);
-		} else if ($sale_type == 'New_To_Old') {
+		} else if ($type == 'true' && $sale_type == 'New_To_Old') {
 			$args = array(
 				'post_type' => 'property',
 				'post_status' => 'publish',
-				'posts_per_page' => 3,
-			);
-
-		} else if ($sale_type == 'all') {
-			$args = array(
-				'post_type' => 'property',
-				'post_status' => 'publish',
-				'posts_per_page' => 3,
-				'order' => 'ASC',
-			);
-		}
-		// } 
-		// else if ($type == true && $sale_type == 'New_To_Old') {
-		// 	
-		else {
-			$args = array(
-				'post_type' => 'property',
-				'post_status' => 'publish',
-				'posts_per_page' => 3,
-				'order' => 'ASC',
 				'paged' => $_POST['paged'],
+				'posts_per_page' => 3,
+				'order' => 'asc',
+			);
+		} else if ($type == 'true') {
+			// else {
+			$args = array(
+				'post_type' => 'property',
+				'post_status' => 'publish',
+				'paged' => $_POST['paged'],
+				// 'offset' => 3,
+				'posts_per_page' => 3,
+				// 'order' => 'desc',
+				// 'orderby' => 'title',
 			);
 		}
+
+
+
 		$query = new WP_Query($args);
 		while ($query->have_posts()) {
 			$query->the_post();
@@ -421,10 +463,19 @@ function saveAjaxData()
 			</div>
 		<?php } ?>
 	</div>
+	<div id="cnt">
+		<?php
+		// $cnt = array(
+		// 	'count' => $query->found_posts
+		// );
+		// global $wp_query; 
+		$cnt = $query->found_posts;
+		print_r($cnt);
+		// echo json_encode($cnt);
+		wp_die();
+		?>
+	</div>
 	<?php
-	wp_die();
-?>
-<?php
 }
 add_action('wp_ajax_nopriv_get_properties_data', 'saveAjaxData');
 add_action('wp_ajax_get_properties_data', 'saveAjaxData');

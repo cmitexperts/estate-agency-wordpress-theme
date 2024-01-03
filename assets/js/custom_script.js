@@ -1,5 +1,5 @@
-// var ppp = 3;
-var page = 1;
+var paged = 2;
+// var ppp = 1;
 $(document).ready(function () {
   $("select#custom_select").on('change', function () {
     load_data(false);
@@ -15,30 +15,33 @@ $(document).ready(function () {
 function load_data(loadMore) {
   Property = $("#custom_select option:selected").val();
   // if (loadMore) {
-  //   page++;
+  //   paged++;
   // }
   $.ajax({
     url: ajax_url,
     type: 'POST',
     dataType: 'html',
-    data: { 'action': 'get_properties_data', 'paged': page, 'loadmore': loadMore, 'filter': Property },
+    data: { 'action': 'get_properties_data', 'paged': paged, 'loadmore': loadMore, 'filter': Property },
     success: function (data) {
-      // if(paged >= data.max) {
-      //   $('#load-more').hide();
-      // }
       if (loadMore == false) {
         $("#property_rent").html(data);
       }
+      // var count = $('#cnt').val();
+      // console.log(count);
+      if (data === 0) {
+        $("#load_more").hide();
+      }
+        // $('#property_rent').append(data);
+        // paged++;
+        // $("#load_more").hide();
+      
       if (loadMore == true) {
         $("#property_rent").append(data);
-        page++;
+        paged++;
       }
     }
   });
 }
-
-
-
 
 
 // let rentbtn = document.getElementById('forrent');
@@ -65,3 +68,10 @@ function load_data(loadMore) {
 // if (ppp == '') {
 //   $('#load_more').hide();
 // }
+
+//  offset: (page * ppp) + 3,
+
+// ,
+//       error: function (errorThrown) {
+//                 alert(errorThrown);
+//       }

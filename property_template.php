@@ -61,11 +61,14 @@
         $args = array(
           'post_type' => 'property',
           'post_status' => 'publish',
-          // 'paged' => $paged,
+          'paged' => 1,
           'posts_per_page' => 3,
-          'order' => 'asc',
+          // 'order' => 'asc',
         );
         $query = new WP_Query($args);
+        // if ($query->found_posts) {
+        //   echo "-1";
+        // }
         while ($query->have_posts()) {
           $query->the_post();
           $image = wp_get_attachment_image_src(get_post_thumbnail_id(), 'large');
@@ -134,10 +137,10 @@
     </div>
     <!-- <div class="row"> -->
     <div class="col-sm-12">
-        <div class="btn__wrapper text-center">
-          <button class="btn btn__primary" id="load_more">Load More</button>
-        </div>
+      <div class="btn__wrapper text-center">
+        <button class="btn btn__primary" id="load_more">Load More</button>
       </div>
+    </div>
     <!-- </div> -->
   </section><!-- End Intro Single-->
 
@@ -154,4 +157,3 @@
 
 
 <?php get_footer(); ?>
-
