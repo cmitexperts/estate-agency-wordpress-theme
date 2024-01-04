@@ -1,5 +1,5 @@
-var paged = 2;
-// var ppp = 1;
+var currentPage = 1;
+// var changePage = 1;
 $(document).ready(function () {
   $("select#custom_select").on('change', function () {
     load_data(false);
@@ -8,36 +8,32 @@ $(document).ready(function () {
 
 $(document).ready(function () {
   $('#load_more').on('click', function () {
-    // alert('hello');
     load_data(true);
   });
 });
 function load_data(loadMore) {
   Property = $("#custom_select option:selected").val();
-  // if (loadMore) {
-  //   paged++;
-  // }
+  if (loadMore) {
+    currentPage++;
+  }
   $.ajax({
     url: ajax_url,
     type: 'POST',
     dataType: 'html',
-    data: { 'action': 'get_properties_data', 'paged': paged, 'loadmore': loadMore, 'filter': Property },
+    data: { 'action': 'get_properties_data', 'paged': currentPage, 'loadmore': loadMore, 'filter': Property },
     success: function (data) {
       if (loadMore == false) {
+        // $('#load_more').hide();
         $("#property_rent").html(data);
       }
-      // var count = $('#cnt').val();
-      // console.log(count);
-      if (data === 0) {
-        $("#load_more").hide();
-      }
-        // $('#property_rent').append(data);
-        // paged++;
-        // $("#load_more").hide();
-      
       if (loadMore == true) {
+        var totalpost = parseInt($('#totalpost').val(), 10);
+        var postsPerPage = 3;
+        var test = Math.ceil(totalpost / postsPerPage);
         $("#property_rent").append(data);
-        paged++;
+        if (currentPage >= test) {
+          $('#load_more').hide();
+        }
       }
     }
   });

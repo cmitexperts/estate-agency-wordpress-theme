@@ -1,7 +1,7 @@
 <?php
 register_nav_menus(array('primary-menu' => 'header-menu', 'secondary-menu' => 'footer-menu'));
 // add_theme_support('post-thumbnails');
-add_theme_support('custom-header');
+// add_theme_support('custom-header');
 
 
 function wpdocs_code_service()
@@ -269,15 +269,13 @@ function custom_menu()
 		'EstateAgency',
 		'edit_posts',
 		'admin.php?page=menu_slug',
+		// 'http://localhost/wordpress/wp-admin/post.php?post=1310&action=edit',
 		'EstateAgency_callback_function',
 		'dashicons-open-folder',
-		4
+		'4',
 	);
 }
-?>
 
-<!--.....................................................Ajax through out this code.................................................-->
-<?php
 // function my_enqueue()
 // {
 
@@ -290,192 +288,182 @@ function custom_menu()
 // add_action('wp_enqueue_scripts', 'my_enqueue');
 
 
-
 function saveAjaxData()
 {
 	// print_r($_POST);
 	// die;
 	$sale_type = $_POST['filter'];
 	$type = $_POST['loadmore'];
-	// $off = $_POST['offset'];
+	$paged = $_POST['paged'];
 	?>
-	<div class="row" id="property_rent" class="property_sale">
-		<?php
-		if ($type == 'false') {
 
-			if ($sale_type == 'rent') {
-				$args = array(
-					'post_type' => 'property',
-					'post_status' => 'publish',
-					'posts_per_page' => 3,
-					'meta_query' => array(
-						array(
-							'key' => 'sale_type',
-							'value' => 'rent',
-							// 'compare' => '='
-						),
-					)
-				);
-			} else if ($sale_type == 'sale') {
-				$args = array(
-					'post_type' => 'property',
-					'post_status' => 'publish',
-					'posts_per_page' => 3,
-					'meta_query' => array(
-						array(
-							'key' => 'sale_type',
-							'value' => 'sale',
-							// 'compare' => '='
-						),
-					)
-				);
-			} else if ($sale_type == 'New_To_Old') {
-				$args = array(
-					'post_type' => 'property',
-					'post_status' => 'publish',
-					'posts_per_page' => 3,
-					'order' => 'ASC',
-				);
-
-			} else if ($sale_type == 'all') {
-				$args = array(
-					'post_type' => 'property',
-					'post_status' => 'publish',
-					'posts_per_page' => 3,
-					// 'order' => 'ASC',
-				);
-			}
-		} else if ($type == 'true' && $sale_type == 'rent') {
-			// else {
+	<?php
+	if ($type == 'false') {
+		if ($sale_type == 'rent') {
 			$args = array(
 				'post_type' => 'property',
 				'post_status' => 'publish',
 				'posts_per_page' => 3,
-				'paged' => $_POST['paged'],
-				'offset' => 3,
 				'meta_query' => array(
 					array(
 						'key' => 'sale_type',
 						'value' => 'rent',
+						// 'compare' => '='
 					),
 				)
 			);
-		} else if ($type == 'true' && $sale_type == 'sale') {
+		} else if ($sale_type == 'sale') {
 			$args = array(
 				'post_type' => 'property',
 				'post_status' => 'publish',
 				'posts_per_page' => 3,
-				'paged' => $_POST['paged'],
-				'offset' => 3,
 				'meta_query' => array(
 					array(
 						'key' => 'sale_type',
 						'value' => 'sale',
+						// 'compare' => '='
 					),
 				)
 			);
-		} else if ($type == 'true' && $sale_type == 'New_To_Old') {
+		} 
+		else if ($sale_type == 'New_To_Old') {
 			$args = array(
 				'post_type' => 'property',
 				'post_status' => 'publish',
-				'paged' => $_POST['paged'],
 				'posts_per_page' => 3,
-				'order' => 'asc',
+				'order' => 'ASC',
 			);
-		} else if ($type == 'true') {
-			// else {
+
+		} else if ($sale_type == 'all') {
 			$args = array(
 				'post_type' => 'property',
 				'post_status' => 'publish',
-				'paged' => $_POST['paged'],
-				// 'offset' => 3,
 				'posts_per_page' => 3,
-				// 'order' => 'desc',
-				// 'orderby' => 'title',
 			);
 		}
+	} else if ($type == 'true' && $sale_type == 'rent') {
+		// else {
+		$args = array(
+			'post_type' => 'property',
+			'post_status' => 'publish',
+			'posts_per_page' => 3,
+			'paged' => $paged,
+			'offset' => 3,
+			'meta_query' => array(
+				array(
+					'key' => 'sale_type',
+					'value' => 'rent',
+				),
+			)
+		);
+	} else if ($type == 'true' && $sale_type == 'sale') {
+		$args = array(
+			'post_type' => 'property',
+			'post_status' => 'publish',
+			'posts_per_page' => 3,
+			'paged' => $paged,
+			'offset' => 3,
+			'meta_query' => array(
+				array(
+					'key' => 'sale_type',
+					'value' => 'sale',
+				),
+			)
+		);
+	} else if ($type == 'true' && $sale_type == 'New_To_Old') {
+		$args = array(
+			'post_type' => 'property',
+			'post_status' => 'publish',
+			'paged' => $paged,
+			'posts_per_page' => 3,
+			'order' => 'asc',
+		);
+	} else {
+		$args = array(
+			'post_type' => 'property',
+			'post_status' => 'publish',
+			'paged' => $paged,
+			'posts_per_page' => 3,
+		);
+	}
 
-
-
-		$query = new WP_Query($args);
-		while ($query->have_posts()) {
-			$query->the_post();
-			$image = wp_get_attachment_image_src(get_post_thumbnail_id(), 'large');
-			?>
-			<div class="col-md-4" id="prop_rent">
-				<div class="card-box-a card-shadow">
-					<div class="img-box-a">
-						<img src="<?php echo $image[0]; ?>" alt="" class="img-a img-fluid" style="width:515px; height: 450px;">
-					</div>
-					<div class="card-overlay">
-						<div class="card-overlay-a-content">
-							<div class="card-header-a">
-								<h2 class="card-title-a">
-									<a href="<?php the_permalink(); ?>">
-										<?php the_title(); ?>
-									</a>
-								</h2>
-							</div>
-							<div class="card-body-a">
-								<div class="price-box d-flex">
-									<span class="price-a">
-										<?php the_field('rent'); ?>
-									</span>
-								</div>
-								<a href="<?php the_permalink(); ?>" class="link-a">
-									<?php _e("Click here to view", "EstateAgency") ?>
-									<span class="bi bi-chevron-right"></span>
+	$query = new WP_Query($args);
+	while ($query->have_posts()) {
+		$query->the_post();
+		$image = wp_get_attachment_image_src(get_post_thumbnail_id(), 'large');
+		?>
+		<input type="hidden" id="totalpost" value="<?php echo $query->found_posts; ?>">
+		<div class="col-md-4" id="prop_rent">
+			<div class="card-box-a card-shadow">
+				<div class="img-box-a">
+					<img src="<?php echo $image[0]; ?>" alt="" class="img-a img-fluid" style="width:515px; height: 450px;">
+				</div>
+				<div class="card-overlay">
+					<div class="card-overlay-a-content">
+						<div class="card-header-a">
+							<h2 class="card-title-a">
+								<a href="<?php the_permalink(); ?>">
+									<?php the_title(); ?>
 								</a>
+							</h2>
+						</div>
+						<div class="card-body-a">
+							<div class="price-box d-flex">
+								<span class="price-a">
+									<?php the_field('rent'); ?>
+								</span>
 							</div>
-							<div class="card-footer-a">
-								<ul class="card-info d-flex justify-content-around">
-									<li>
-										<h4 class="card-info-title">
-											<?php _e("Area", "EstateAgency") ?>
-										</h4>
-										<?php the_field('area'); ?>
-										<sup>2</sup>
-									</li>
-									<li>
-										<h4 class="card-info-title">
-											<?php _e("Beds", "EstateAgency") ?>
-										</h4>
-										<?php the_field('beds'); ?>
-									</li>
-									<li>
-										<h4 class="card-info-title">
-											<?php _e("Baths", "EstateAgency") ?>
-										</h4>
-										<?php the_field('baths'); ?>
-									</li>
-									<li>
-										<h4 class="card-info-title">
-											<?php _e("Garages", "EstateAgency") ?>
-										</h4>
-										<?php the_field('garages'); ?>
-									</li>
-								</ul>
-							</div>
+							<a href="<?php the_permalink(); ?>" class="link-a">
+								<?php _e("Click here to view", "EstateAgency") ?>
+								<span class="bi bi-chevron-right"></span>
+							</a>
+						</div>
+						<div class="card-footer-a">
+							<ul class="card-info d-flex justify-content-around">
+								<li>
+									<h4 class="card-info-title">
+										<?php _e("Area", "EstateAgency") ?>
+									</h4>
+									<?php the_field('area'); ?>
+									<sup>2</sup>
+								</li>
+								<li>
+									<h4 class="card-info-title">
+										<?php _e("Beds", "EstateAgency") ?>
+									</h4>
+									<?php the_field('beds'); ?>
+								</li>
+								<li>
+									<h4 class="card-info-title">
+										<?php _e("Baths", "EstateAgency") ?>
+									</h4>
+									<?php the_field('baths'); ?>
+								</li>
+								<li>
+									<h4 class="card-info-title">
+										<?php _e("Garages", "EstateAgency") ?>
+									</h4>
+									<?php the_field('garages'); ?>
+								</li>
+							</ul>
 						</div>
 					</div>
 				</div>
-				<?php wp_reset_postdata(); ?>
 			</div>
-		<?php } ?>
+		</div>
+	<?php }
+	wp_reset_postdata();
+	?>
+	<!-- <php 
+	if ($type == 'false') {?>
+	<div class="col-sm-12">
+		<div class="btn__wrapper text-center">
+			<button class="btn btn__primary" id="more_post">More_Post</button>
+		</div>
 	</div>
-	<div id="cnt">
-		<?php
-		// $cnt = array(
-		// 	'count' => $query->found_posts
-		// );
-		// global $wp_query; 
-		$cnt = $query->found_posts;
-		print_r($cnt);
-		// echo json_encode($cnt);
-		wp_die();
-		?>
-	</div>
+	<php } ?> -->
 	<?php
+	wp_die();
 }
 add_action('wp_ajax_nopriv_get_properties_data', 'saveAjaxData');
 add_action('wp_ajax_get_properties_data', 'saveAjaxData');

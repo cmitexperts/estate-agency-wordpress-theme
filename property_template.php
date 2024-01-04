@@ -66,13 +66,11 @@
           // 'order' => 'asc',
         );
         $query = new WP_Query($args);
-        // if ($query->found_posts) {
-        //   echo "-1";
-        // }
         while ($query->have_posts()) {
           $query->the_post();
           $image = wp_get_attachment_image_src(get_post_thumbnail_id(), 'large');
           ?>
+          <input type="hidden" id="totalpost" value="<?php echo $query->found_posts; ?>" >
           <div class="col-md-4" id="prop_rent">
             <div class="card-box-a card-shadow">
               <div class="img-box-a">
