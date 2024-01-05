@@ -294,7 +294,8 @@ function saveAjaxData()
 	// die;
 	$sale_type = $_POST['filter'];
 	$type = $_POST['loadmore'];
-	$paged = $_POST['paged'];
+	// $page = $_POST['paged'];
+	// $paged = 1;
 	?>
 
 	<?php
@@ -304,6 +305,7 @@ function saveAjaxData()
 				'post_type' => 'property',
 				'post_status' => 'publish',
 				'posts_per_page' => 3,
+				'order' => 'asc',
 				'meta_query' => array(
 					array(
 						'key' => 'sale_type',
@@ -317,6 +319,7 @@ function saveAjaxData()
 				'post_type' => 'property',
 				'post_status' => 'publish',
 				'posts_per_page' => 3,
+				'order' => 'asc',
 				'meta_query' => array(
 					array(
 						'key' => 'sale_type',
@@ -325,13 +328,11 @@ function saveAjaxData()
 					),
 				)
 			);
-		} 
-		else if ($sale_type == 'New_To_Old') {
+		} else if ($sale_type == 'New_To_Old') {
 			$args = array(
 				'post_type' => 'property',
 				'post_status' => 'publish',
 				'posts_per_page' => 3,
-				'order' => 'ASC',
 			);
 
 		} else if ($sale_type == 'all') {
@@ -339,51 +340,52 @@ function saveAjaxData()
 				'post_type' => 'property',
 				'post_status' => 'publish',
 				'posts_per_page' => 3,
+				'order' => 'ASC',
 			);
 		}
 	} else if ($type == 'true' && $sale_type == 'rent') {
-		// else {
 		$args = array(
 			'post_type' => 'property',
 			'post_status' => 'publish',
 			'posts_per_page' => 3,
-			'paged' => $paged,
-			'offset' => 3,
+			'order' => 'asc',
+			'paged' => $_POST['paged'],
 			'meta_query' => array(
-				array(
-					'key' => 'sale_type',
-					'value' => 'rent',
-				),
-			)
+					array(
+						'key' => 'sale_type',
+						'value' => 'rent',
+					),
+				)
 		);
 	} else if ($type == 'true' && $sale_type == 'sale') {
 		$args = array(
 			'post_type' => 'property',
 			'post_status' => 'publish',
 			'posts_per_page' => 3,
-			'paged' => $paged,
-			'offset' => 3,
+			'order' => 'asc',
+			'paged' => $_POST['paged'],
 			'meta_query' => array(
-				array(
-					'key' => 'sale_type',
-					'value' => 'sale',
-				),
-			)
+					array(
+						'key' => 'sale_type',
+						'value' => 'sale',
+					),
+				)
 		);
 	} else if ($type == 'true' && $sale_type == 'New_To_Old') {
 		$args = array(
 			'post_type' => 'property',
 			'post_status' => 'publish',
-			'paged' => $paged,
+			'paged' => $_POST['paged'],
 			'posts_per_page' => 3,
-			'order' => 'asc',
+			'order' => 'desc',
 		);
-	} else {
+	} else if ($type == 'true' && $sale_type == 'all') {
 		$args = array(
 			'post_type' => 'property',
 			'post_status' => 'publish',
-			'paged' => $paged,
+			'paged' => $_POST['paged'],
 			'posts_per_page' => 3,
+			'order' => 'asc',
 		);
 	}
 
@@ -392,11 +394,10 @@ function saveAjaxData()
 		$query->the_post();
 		$image = wp_get_attachment_image_src(get_post_thumbnail_id(), 'large');
 		?>
-		<input type="hidden" id="totalpost" value="<?php echo $query->found_posts; ?>">
 		<div class="col-md-4" id="prop_rent">
 			<div class="card-box-a card-shadow">
 				<div class="img-box-a">
-					<img src="<?php echo $image[0]; ?>" alt="" class="img-a img-fluid" style="width:515px; height: 450px;">
+					<img src="<?php echo $image[0]; ?>" alt="" class="img-a img-fluid" style="width:515px; height:450px;">
 				</div>
 				<div class="card-overlay">
 					<div class="card-overlay-a-content">
@@ -452,23 +453,15 @@ function saveAjaxData()
 			</div>
 		</div>
 	<?php }
+	// $num = $query->post_count;
+	// print_r ($num);
 	wp_reset_postdata();
 	?>
-	<!-- <php 
-	if ($type == 'false') {?>
-	<div class="col-sm-12">
-		<div class="btn__wrapper text-center">
-			<button class="btn btn__primary" id="more_post">More_Post</button>
-		</div>
-	</div>
-	<php } ?> -->
 	<?php
 	wp_die();
 }
 add_action('wp_ajax_nopriv_get_properties_data', 'saveAjaxData');
 add_action('wp_ajax_get_properties_data', 'saveAjaxData');
 
-
-// Load More for rent...
 
 

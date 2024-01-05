@@ -63,7 +63,7 @@
           'post_status' => 'publish',
           'paged' => 1,
           'posts_per_page' => 3,
-          // 'order' => 'asc',
+          'order' => 'asc',
         );
         $query = new WP_Query($args);
         while ($query->have_posts()) {
